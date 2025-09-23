@@ -90,14 +90,22 @@
   }
 
   code:not([class*="language-"]) {
-    @apply bg-muted text-muted-foreground rounded-sm px-1 py-0.5 font-code text-sm;
+    @apply bg-muted text-primary rounded-sm px-1.5 py-1 font-code text-[0.9rem];
   }
 
   pre {
-    @apply bg-muted rounded-md p-4 overflow-x-auto;
+    @apply bg-primary/5 border border-primary/10 rounded-md p-4 overflow-x-auto text-sm my-4;
   }
 
   pre code {
-    @apply p-0 bg-transparent text-sm;
+    @apply p-0 bg-transparent;
+  }
+
+  .prose strong {
+    @apply text-foreground;
+  }
+
+  .prose p {
+    @apply leading-relaxed;
   }
 }

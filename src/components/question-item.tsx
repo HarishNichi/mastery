@@ -15,6 +15,43 @@ interface QuestionItemProps {
   onToggle: (questionId: string, isCompleted: boolean) => void;
 }
 
+function renderAnswer(answer: string) {
+    const codeBlockRegex = /```(javascript|jsx|vue|html|bash|json)?\s*([\s\S]*?)```/g;
+    const parts = answer.split(codeBlockRegex);
+
+    return parts.map((part, index) => {
+        const isCode = index % 3 === 2;
+        const isLang = index % 3 === 1;
+
+        if (isCode) {
+            return (
+                <pre key={index}>
+                    <code>{part.trim()}</code>
+                </pre>
+            );
+        }
+        
+        if (isLang) return null;
+
+        return part.split('\n').map((line, lineIndex) => {
+            const trimmedLine = line.trim();
+            if (trimmedLine) {
+                 // Bold text between **
+                const boldRegex = /\*\*(.*?)\*\*/g;
+                const boldedLine = trimmedLine.replace(boldRegex, '<strong>$1</strong>');
+                
+                // Inline code between `
+                const inlineCodeRegex = /`([^`]+)`/g;
+                const finalLine = boldedLine.replace(inlineCodeRegex, '<code>$1</code>');
+
+                return <p key={`${index}-${lineIndex}`} dangerouslySetInnerHTML={{ __html: finalLine }} />;
+            }
+            return null;
+        });
+    });
+}
+
+
 export function QuestionItem({
   question,
   isCompleted,
@@ -24,9 +61,6 @@ export function QuestionItem({
     e.stopPropagation();
     onToggle(question.id, !isCompleted);
   };
-
-  const codeBlockRegex = /```(javascript|jsx|vue|html|bash|json)?\s*([\s\S]*?)```/g;
-  const parts = question.answer.split(codeBlockRegex);
 
   return (
     <Accordion type="single" collapsible>
@@ -44,21 +78,7 @@ export function QuestionItem({
         </AccordionTrigger>
         <AccordionContent className="p-4 pt-0">
           <div className="prose prose-sm max-w-none dark:prose-invert">
-            {parts.map((part, index) => {
-              if (index % 3 === 2) { // The captured code block
-                return (
-                  <pre key={index}>
-                    <code>{part.trim()}</code>
-                  </pre>
-                );
-              }
-              if (index % 3 === 0) { // The text before/after code blocks
-                return part.split('\n').map((line, lineIndex) => (
-                    <p key={`${index}-${lineIndex}`}>{line.replace(/`([^`]+)`/g, '<code>$1</code>')}</p>
-                ));
-              }
-              return null; // The language part, which we ignore for now
-            })}
+            {renderAnswer(question.answer)}
           </div>
         </AccordionContent>
       </AccordionItem>

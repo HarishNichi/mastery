@@ -2,10 +2,12 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
+import { Pwa } from '@/components/pwa';
 
 export const metadata: Metadata = {
   title: 'Mastery Tracks',
   description: 'Your personalized guide to mastering web development.',
+  manifest: '/manifest.ts',
 };
 
 export default function RootLayout({
@@ -34,6 +36,7 @@ export default function RootLayout({
       <body className={cn('font-body antialiased')}>
         {children}
         <Toaster />
+        <Pwa />
       </body>
     </html>
   );

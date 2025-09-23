@@ -635,7 +635,7 @@ function reverseStringIterative(str) {
   return reversed;
 }
 
-consolelog(reverseStringIterative("world")); // "dlrow"
+console.log(reverseStringIterative("world")); // "dlrow"
 \`\`\`
 `
   },
@@ -866,7 +866,7 @@ memoizedAdd(2, 3); // Fetches from cache
 Traverse the object graph and keep track of objects already visited during the traversal. If you encounter an object that has already been visited in the current path, you have found a cycle.
 
 1.  Use a \`Set\` or a \`WeakSet\` to store visited objects.
-2 tribulations. Create a recursive helper function that takes the current object and the set of visited objects.
+2.  Create a recursive helper function that takes the current object and the set of visited objects.
 3.  In the helper, add the current object to the set.
 4.  Iterate through the properties. If a property's value is an object and has already been seen in the set, return \`true\`.
 5.  If not, recursively call the helper on that property's value.
@@ -1044,7 +1044,7 @@ function customPromiseRace(promises) {
 1.  Use a \`Map\` or an object to store the groups.
 2.  Iterate through the array of strings.
 3.  For each string, get its first letter (and optionally normalize it to lowercase).
-4 tribulations. If the first letter is not yet a key in your map/object, create a new entry with an array containing the current string.
+4.  If the first letter is not yet a key in your map/object, create a new entry with an array containing the current string.
 5.  If the first letter is already a key, push the current string into the existing array.
 
 \`\`\`javascript
@@ -1125,7 +1125,7 @@ fetchDataFromUrls(API_URLS)
 **Logic/Approach:**
 
 1.  Use a regular expression that matches common email formats. Note that a perfect, RFC-compliant email regex is extremely complex. A practical one is usually sufficient.
-2 tribulations. Use the \`test()\` method of the RegExp object, which returns \`true\` if there is a match and \`false\` otherwise.
+2.  Use the \`test()\` method of the RegExp object, which returns \`true\` if there is a match and \`false\` otherwise.
 
 \`\`\`javascript
 function isValidEmail(email) {
@@ -1317,7 +1317,203 @@ const reactTheoretical: Question[] = [
   - **Reusability of Logic:** Custom Hooks allow you to extract and reuse stateful logic.
   - **No \`this\` binding:** Avoids the complexity of the \`this\` keyword.
   - **Easier to test.**`
-  },
+    },
+    {
+        id: 'react-hooks',
+        type: 'theoretical',
+        question: 'What are React Hooks? Explain common hooks like useState, useEffect, useContext, useReducer, useCallback, useMemo.',
+        answer: `**Answer Guidance:**
+
+- **React Hooks:** Functions that let you "hook into" React state and lifecycle features from functional components.
+- **Common Hooks:**
+  - **\`useState\`:** Adds state to a functional component.
+  - **\`useEffect\`:** Lets you perform side effects (data fetching, subscriptions, DOM manipulation). It's a combination of \`componentDidMount\`, \`componentDidUpdate\`, and \`componentWillUnmount\`.
+  - **\`useContext\`:** Accepts a context object and returns the current context value. It's used to consume shared data.
+  - **\`useReducer\`:** An alternative to \`useState\`. It's usually preferable for complex state logic.
+  - **\`useCallback\`:** Returns a memoized callback function. This is useful when passing callbacks to optimized child components that rely on reference equality to prevent unnecessary renders.
+  - **\`useMemo\`:** Returns a memoized value. It recomputes the memoized value only when one of the dependencies has changed. It's used for performance optimization.
+`
+    },
+    {
+        id: 'react-component-lifecycle',
+        type: 'theoretical',
+        question: "Describe the React component lifecycle. How do lifecycle methods map to useEffect?",
+        answer: `**Answer Guidance:**
+
+- **Mounting:** When an instance of a component is being created and inserted into the DOM.
+  - \`constructor()\`, \`render()\`, \`componentDidMount()\`
+- **Updating:** When a component is being re-rendered as a result of changes to either its props or state.
+  - \`render()\`, \`componentDidUpdate()\`
+- **Unmounting:** When a component is being removed from the DOM.
+  - \`componentWillUnmount()\`
+
+**Mapping to \`useEffect\`:**
+- **\`componentDidMount\`:** \`useEffect(() => { ... }, [])\` (empty dependency array).
+- **\`componentDidUpdate\`:** \`useEffect(() => { ... }, [dep1, dep2])\` (with dependencies).
+- **\`componentWillUnmount\`:** The cleanup function returned from \`useEffect\`. \`useEffect(() => { return () => { ... } }, [])\`.
+`
+    },
+    {
+        id: 'jsx',
+        type: 'theoretical',
+        question: "What is JSX? How does it work?",
+        answer: `**Answer Guidance:**
+
+- **JSX (JavaScript XML):** A syntax extension for JavaScript that looks similar to HTML. It allows youto write HTML-like code in your JavaScript files.
+- **How it works:** JSX is not understood by browsers. It's compiled (transpiled) by tools like Babel into regular JavaScript function calls (\`React.createElement()\`). These function calls create JavaScript objects that describe the UI.
+`
+    },
+    {
+        id: 'state-management-react',
+        type: 'theoretical',
+        question: "Explain state management in React. Discuss different approaches (local state, Context API, Redux, Zustand, Jotai).",
+        answer: `**Answer Guidance:**
+
+- **Local State:** State that is managed within a single component using \`useState\` or \`useReducer\`.
+- **Context API:** A way to pass data through the component tree without having to pass props down manually at every level. Good for "global" data like themes, user info.
+- **Redux:** A predictable state container for JavaScript apps. It uses a single global store, actions, and reducers. Provides strong debugging tools.
+- **Zustand:** A small, fast, and scalable state-management solution using hooks. It's often considered a simpler alternative to Redux.
+- **Jotai:** A primitive and flexible state management solution for React based on atomic state.
+`
+    },
+    {
+        id: 'prop-drilling',
+        type: 'theoretical',
+        question: "What is prop drilling? How can you avoid it?",
+        answer: `**Answer Guidance:**
+
+- **Prop Drilling:** The process of passing data from a parent component down to a child component through multiple layers of intermediate components that don't need the data.
+- **How to avoid it:**
+  - **Context API:** For global data.
+  - **State Management Libraries (Redux, Zustand):** For application-wide state.
+  - **Component Composition:** Restructuring components to pass children directly.
+`
+    },
+    {
+        id: 'composition-vs-inheritance',
+        type: 'theoretical',
+        question: "Explain the concept of component composition vs. inheritance in React.",
+        answer: `**Answer Guidance:**
+
+- **Inheritance:** React does not favor class inheritance for sharing code between components.
+- **Composition:** React strongly favors composition. Instead of a component inheriting functionality from a parent component, it can be "composed" with other components by passing them as props (often as \`children\`). This is a more flexible and robust way to reuse code.
+`
+    },
+    {
+        id: 'higher-order-components',
+        type: 'theoretical',
+        question: "What are Higher-Order Components (HOCs)? What are their pros and cons? How do they compare to Hooks?",
+        answer: `**Answer Guidance:**
+
+- **HOCs:** A function that takes a component and returns a new component with additional props or logic. It's a pattern for reusing component logic.
+- **Pros:** Reusability.
+- **Cons:** Can lead to "wrapper hell" (many nested components in the React DevTools), can be hard to follow where props are coming from.
+- **Comparison to Hooks:** Hooks are now the preferred way to share stateful logic. They are more explicit, easier to compose, and don't create extra components in the tree.
+`
+    },
+    {
+        id: 'shouldcomponentupdate-react-memo',
+        type: 'theoretical',
+        question: "What is shouldComponentUpdate and React.memo? When and why would you use them for performance optimization?",
+        answer: `**Answer Guidance:**
+
+- **\`shouldComponentUpdate\`:** A lifecycle method in class components that lets you control if a component should re-render.
+- **\`React.memo\`:** A higher-order component for functional components that does a shallow comparison of props and prevents re-rendering if the props haven't changed.
+- **When to use:** Use them to optimize performance when a component is re-rendering unnecessarily, especially in large lists or with complex UI.
+`
+    },
+    {
+        id: 'react-reconciliation',
+        type: 'theoretical',
+        question: "Explain React's reconciliation process.",
+        answer: `**Answer Guidance:**
+
+Reconciliation is the process through which React updates the DOM. When a component's state or props change, React compares the new Virtual DOM with the old one (this is the "diffing" algorithm) and then makes the minimal necessary changes to the real DOM.
+`
+    },
+    {
+        id: 'server-side-rendering',
+        type: 'theoretical',
+        question: "What is server-side rendering (SSR)? How does React support it (e.g., Next.js)?",
+        answer: `**Answer Guidance:**
+
+- **SSR:** The process of rendering React components on the server into HTML, which is then sent to the client. This can improve performance and SEO.
+- **How React supports it:** React provides APIs like \`ReactDOMServer.renderToString()\` that can be used on a server. Frameworks like Next.js are built around this capability to provide a seamless SSR experience.
+`
+    },
+    {
+        id: 'controlled-vs-uncontrolled',
+        type: 'theoretical',
+        question: "Discuss the differences between controlled and uncontrolled components in React.",
+        answer: `**Answer Guidance:**
+
+- **Controlled Components:** Form elements whose value is controlled by React state. The value is set via props, and changes are handled by callbacks. This is the recommended approach.
+- **Uncontrolled Components:** Form elements where the DOM handles the state (e.g., using a \`ref\` to get the value).
+`
+    },
+    {
+        id: 'key-prop',
+        type: 'theoretical',
+        question: "What is key prop used for in React lists? Why is it important?",
+        answer: `**Answer Guidance:**
+
+- **Keys:** Special string attributes you need to include when creating lists of elements. Keys help React identify which items have changed, are added, or are removed.
+- **Importance:** Keys should be stable, predictable, and unique. They help React perform efficient updates. Using array indexes as keys is an anti-pattern if the list can be reordered.
+`
+    },
+    {
+        id: 'context-api-vs-redux',
+        type: 'theoretical',
+        question: "Explain the concept of Context API. When is it a good alternative to Redux?",
+        answer: `**Answer Guidance:**
+
+- **Context API:** Provides a way to pass data through the component tree without prop drilling.
+- **Alternative to Redux:** Context is great for low-frequency updates of simple data (like theming, user authentication). Redux is better for complex, high-frequency state changes that require robust debugging tools.
+`
+    },
+    {
+        id: 'usecallback-vs-usememo',
+        type: 'theoretical',
+        question: "What is the difference between useCallback and useMemo?",
+        answer: `**Answer Guidance:**
+
+- **\`useCallback\`:** Memoizes a callback function.
+- **\`useMemo\`:** Memoizes a value.
+
+You use \`useCallback\` to prevent re-creation of functions, and \`useMemo\` to prevent re-computation of expensive values.
+`
+    },
+    {
+        id: 'useeffect-dependency-array',
+        type: 'theoretical',
+        question: "Describe the useEffect hook's dependency array. What happens if it's omitted or empty?",
+        answer: `**Answer Guidance:**
+
+- **Dependency Array:** The second argument to \`useEffect\`. It's an array of values that the effect depends on.
+- **Omitted:** The effect runs after every render.
+- **Empty Array \`[]\`:** The effect runs only once, after the initial render (like \`componentDidMount\`).
+- **With Dependencies \`[dep1, dep2]\`:** The effect runs after the initial render and whenever any of the dependencies change.
+`
+    },
+    {
+        id: 'create-react-app',
+        type: 'theoretical',
+        question: "What is the role of create-react-app? What are its limitations in a production environment?",
+        answer: `**Answer Guidance:**
+
+- **Role:** A tool to quickly set up a new single-page React application with a good default configuration.
+- **Limitations:** It's a client-side rendering (CSR) solution. It doesn't support server-side rendering (SSR) or static site generation (SSG) out of the box, which can be important for performance and SEO in production. Frameworks like Next.js are often preferred for production apps.
+`
+    },
+    {
+        id: 'react-routing',
+        type: 'theoretical',
+        question: "How do you handle routing in React? (React Router).",
+        answer: `**Answer Guidance:**
+
+- **React Router:** The most popular library for routing in React. It provides components like \`<BrowserRouter>\`, \`<Routes>\`, \`<Route>\`, and \`<Link>\` to manage navigation in a single-page application.
+`
+    }
 ];
 
 const reactCoding: Question[] = [
@@ -1391,7 +1587,668 @@ function SimpleForm() {
 export default SimpleForm;
 \`\`\`
 `
+    },
+    {
+        id: slugify("Implement a component that fetches data from an API and displays it. Include loading and error states."),
+        type: "coding",
+        question: "Implement a component that fetches data from an API and displays it. Include loading and error states.",
+        answer: `
+\`\`\`jsx
+import React, { useState, useEffect } from 'react';
+
+function DataFetcher() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/posts/1')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        setError(error);
+        setLoading(false);
+      });
+  }, []); // Empty array means this effect runs once on mount
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  return (
+    <div>
+      <h2>Fetched Data</h2>
+      <p>{data.title}</p>
+    </div>
+  );
+}
+
+export default DataFetcher;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Create a reusable button component with different variants (primary, secondary)."),
+        type: "coding",
+        question: "Create a reusable button component with different variants (primary, secondary).",
+        answer: `
+\`\`\`jsx
+import React from 'react';
+
+function Button({ children, variant = 'primary', ...props }) {
+  const baseStyles = "px-4 py-2 rounded ";
+  const styles = {
+    primary: "bg-blue-500 text-white",
+    secondary: "bg-gray-500 text-white",
+  };
+  
+  return (
+    <button className={\`\${baseStyles} \${styles[variant]}\`} {...props}>
+      {children}
+    </button>
+  );
+}
+
+export default Button;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Build a modal component that can be toggled open and closed."),
+        type: "coding",
+        question: "Build a modal component that can be toggled open and closed.",
+        answer: `
+\`\`\`jsx
+import React, { useState } from 'react';
+
+function Modal({ isOpen, onClose, children }) {
+  if (!isOpen) return null;
+
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)' }}>
+      <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: '20px' }}>
+        {children}
+        <button onClick={onClose}>Close</button>
+      </div>
+    </div>
+  );
+}
+
+function ModalExample() {
+    const [isModalOpen, setModalOpen] = useState(false);
+    return (
+        <div>
+            <button onClick={() => setModalOpen(true)}>Open Modal</button>
+            <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+                <p>This is a modal!</p>
+            </Modal>
+        </div>
+    );
+}
+
+export default ModalExample;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Implement a list component that renders a dynamic list of items, with functionality to add/remove items."),
+        type: "coding",
+        question: "Implement a list component that renders a dynamic list of items, with functionality to add/remove items.",
+        answer: `
+\`\`\`jsx
+import React, { useState } from 'react';
+
+function DynamicList() {
+  const [items, setItems] = useState(['Apple', 'Banana', 'Cherry']);
+  const [newItem, setNewItem] = useState('');
+
+  const addItem = () => {
+    if (newItem.trim()) {
+      setItems([...items, newItem]);
+      setNewItem('');
+    }
+  };
+
+  const removeItem = (indexToRemove) => {
+    setItems(items.filter((_, index) => index !== indexToRemove));
+  };
+
+  return (
+    <div>
+      <input 
+        type="text" 
+        value={newItem} 
+        onChange={(e) => setNewItem(e.target.value)} 
+      />
+      <button onClick={addItem}>Add Item</button>
+      <ul>
+        {items.map((item, index) => (
+          <li key={index}>
+            {item}
+            <button onClick={() => removeItem(index)}>Remove</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default DynamicList;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Create a toggle switch component."),
+        type: "coding",
+        question: "Create a toggle switch component.",
+        answer: `
+\`\`\`jsx
+import React, { useState } from 'react';
+
+function ToggleSwitch() {
+  const [isOn, setIsOn] = useState(false);
+
+  return (
+    <button onClick={() => setIsOn(!isOn)}>
+      {isOn ? 'ON' : 'OFF'}
+    </button>
+  );
+}
+
+export default ToggleSwitch;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Build a pagination component for a list of items."),
+        type: "coding",
+        question: "Build a pagination component for a list of items.",
+        answer: `
+\`\`\`jsx
+import React, { useState } from 'react';
+
+function Pagination({ totalItems, itemsPerPage, onPageChange }) {
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  
+  return (
+    <div>
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+        <button key={page} onClick={() => onPageChange(page)}>
+          {page}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function PaginatedList() {
+    const allItems = Array.from({ length: 50 }, (_, i) => \`Item \${i + 1}\`);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+    
+    const currentItems = allItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    return (
+        <div>
+            <ul>
+                {currentItems.map(item => <li key={item}>{item}</li>)}
+            </ul>
+            <Pagination 
+                totalItems={allItems.length} 
+                itemsPerPage={itemsPerPage} 
+                onPageChange={setCurrentPage} 
+            />
+        </div>
+    );
+}
+
+export default PaginatedList;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Implement a search filter for a list of items."),
+        type: "coding",
+        question: "Implement a search filter for a list of items.",
+        answer: `
+\`\`\`jsx
+import React, { useState } from 'react';
+
+const allItems = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry'];
+
+function SearchFilter() {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredItems = allItems.filter(item => 
+    item.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div>
+      <input 
+        type="text" 
+        placeholder="Search..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <ul>
+        {filteredItems.map(item => <li key={item}>{item}</li>)}
+      </ul>
+    </div>
+  );
+}
+
+export default SearchFilter;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Create a simple quiz application with multiple questions and scoring."),
+        type: "coding",
+        question: "Create a simple quiz application with multiple questions and scoring.",
+        answer: `
+\`\`\`jsx
+import React, { useState } from 'react';
+
+const questions = [
+  { question: 'What is 2 + 2?', answer: '4' },
+  { question: 'What is the capital of France?', answer: 'Paris' },
+];
+
+function Quiz() {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [score, setScore] = useState(0);
+  const [userAnswer, setUserAnswer] = useState('');
+
+  const handleAnswer = () => {
+    if (userAnswer.toLowerCase() === questions[currentQuestionIndex].answer.toLowerCase()) {
+      setScore(score + 1);
+    }
+    setUserAnswer('');
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
+  };
+
+  if (currentQuestionIndex >= questions.length) {
+    return <h2>Quiz Over! Your score: {score}</h2>;
   }
+
+  return (
+    <div>
+      <h2>{questions[currentQuestionIndex].question}</h2>
+      <input 
+        type="text"
+        value={userAnswer}
+        onChange={(e) => setUserAnswer(e.target.value)}
+      />
+      <button onClick={handleAnswer}>Submit</button>
+    </div>
+  );
+}
+
+export default Quiz;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Build a form with validation using useState and basic JavaScript."),
+        type: "coding",
+        question: "Build a form with validation using useState and basic JavaScript.",
+        answer: `
+\`\`\`jsx
+import React, { useState } from 'react';
+
+function ValidatedForm() {
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+
+  const validateEmail = (email) => {
+    return /\\S+@\\S+\\.\\S+/.test(email);
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validateEmail(email)) {
+      setError('Invalid email format');
+    } else {
+      setError('');
+      alert('Form submitted!');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input 
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+
+export default ValidatedForm;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Implement a component that listens to window resize events and updates its state."),
+        type: "coding",
+        question: "Implement a component that listens to window resize events and updates its state.",
+        answer: `
+\`\`\`jsx
+import React, { useState, useEffect } from 'react';
+
+function WindowSize() {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return <p>Window width: {windowWidth}px</p>;
+}
+
+export default WindowSize;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Create a component that uses useContext to share data between components without prop drilling."),
+        type: "coding",
+        question: "Create a component that uses useContext to share data between components without prop drilling.",
+        answer: `
+\`\`\`jsx
+import React, { useState, useContext, createContext } from 'react';
+
+const ThemeContext = createContext();
+
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState('light');
+  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+function Toolbar() {
+    const { theme, toggleTheme } = useContext(ThemeContext);
+    return (
+        <div>
+            <p>Current theme: {theme}</p>
+            <button onClick={toggleTheme}>Toggle Theme</button>
+        </div>
+    );
+}
+
+function AppWithContext() {
+    return (
+        <ThemeProvider>
+            <Toolbar />
+        </ThemeProvider>
+    );
+}
+
+export default AppWithContext;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Build a component that fetches data and caches it using useMemo or a custom hook."),
+        type: "coding",
+        question: "Build a component that fetches data and caches it using useMemo or a custom hook.",
+        answer: `
+\`\`\`jsx
+import React, { useState, useEffect, useMemo } from 'react';
+
+// Using useMemo for simple caching based on an ID
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+
+  const fetchUser = async (id) => {
+    const response = await fetch(\`https://jsonplaceholder.typicode.com/users/\${id}\`);
+    return response.json();
+  };
+
+  const cachedUser = useMemo(() => fetchUser(userId), [userId]);
+
+  useEffect(() => {
+    cachedUser.then(setUser);
+  }, [cachedUser]);
+  
+  return user ? <div>{user.name}</div> : <p>Loading...</p>;
+}
+
+export default UserProfile;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Implement a component that uses React.memo to optimize rendering for a list item."),
+        type: "coding",
+        question: "Implement a component that uses React.memo to optimize rendering for a list item.",
+        answer: `
+\`\`\`jsx
+import React, { useState, memo } from 'react';
+
+const ListItem = memo(function ListItem({ text }) {
+  console.log(\`Rendering \${text}\`);
+  return <li>{text}</li>;
+});
+
+function List() {
+  const [items, setItems] = useState(['Apple', 'Banana']);
+  const [newItem, setNewItem] = useState('');
+  
+  return (
+    <div>
+        <input value={newItem} onChange={e => setNewItem(e.target.value)} />
+        <button onClick={() => setItems([...items, newItem])}>Add</button>
+        <ul>
+            {items.map(item => <ListItem key={item} text={item} />)}
+        </ul>
+    </div>
+  );
+}
+
+export default List;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Create a custom hook for fetching data from an API."),
+        type: "coding",
+        question: "Create a custom hook for fetching data from an API.",
+        answer: `
+\`\`\`jsx
+import { useState, useEffect } from 'react';
+
+function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(url)
+      .then(res => res.json())
+      .then(setData)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, [url]);
+
+  return { data, loading, error };
+}
+
+// Usage:
+// const { data, loading, error } = useFetch('api/url');
+\`\`\`
+`
+    },
+    {
+        id: slugify("Build a dropdown component with keyboard navigation."),
+        type: "coding",
+        question: "Build a dropdown component with keyboard navigation.",
+        answer: `
+\`\`\`jsx
+import React, { useState, useEffect, useRef } from 'react';
+
+function Dropdown({ options }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!isOpen) return;
+      if (e.key === 'ArrowDown') {
+        setFocusedIndex(i => (i + 1) % options.length);
+      } else if (e.key === 'ArrowUp') {
+        setFocusedIndex(i => (i - 1 + options.length) % options.length);
+      } else if (e.key === 'Enter') {
+        // select option
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, options.length]);
+
+  return (
+    <div ref={ref}>
+      <button onClick={() => setIsOpen(!isOpen)}>Toggle</button>
+      {isOpen && (
+        <ul>
+          {options.map((option, i) => (
+            <li key={option} style={{ backgroundColor: i === focusedIndex ? 'lightgray' : 'white' }}>
+              {option}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+export default Dropdown;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Implement a drag-and-drop functionality for list items."),
+        type: "coding",
+        question: "Implement a drag-and-drop functionality for list items.",
+        answer: `
+\`\`\`jsx
+import React, { useState } from 'react';
+
+function DraggableList() {
+  const [items, setItems] = useState(['Item 1', 'Item 2', 'Item 3']);
+  const dragItem = React.useRef();
+  const dragOverItem = React.useRef();
+
+  const handleDragSort = () => {
+    let _items = [...items];
+    const draggedItemContent = _items.splice(dragItem.current, 1)[0];
+    _items.splice(dragOverItem.current, 0, draggedItemContent);
+    dragItem.current = null;
+    dragOverItem.current = null;
+    setItems(_items);
+  };
+
+  return (
+    <ul>
+      {items.map((item, index) => (
+        <li
+          key={index}
+          draggable
+          onDragStart={() => (dragItem.current = index)}
+          onDragEnter={() => (dragOverItem.current = index)}
+          onDragEnd={handleDragSort}
+          onDragOver={(e) => e.preventDefault()}
+        >
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export default DraggableList;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Create a component that displays a progress bar based on some value."),
+        type: "coding",
+        question: "Create a component that displays a progress bar based on some value.",
+        answer: `
+\`\`\`jsx
+import React from 'react';
+
+function ProgressBar({ value }) { // value is 0 to 100
+  return (
+    <div style={{ border: '1px solid black', width: '100px' }}>
+      <div style={{ width: \`\${value}%\`, height: '20px', backgroundColor: 'green' }} />
+    </div>
+  );
+}
+
+export default ProgressBar;
+\`\`\`
+`
+    },
+    {
+        id: slugify("Build a simple chat interface where messages appear in real-time (simulate with setInterval)."),
+        type: "coding",
+        question: "Build a simple chat interface where messages appear in real-time (simulate with setInterval).",
+        answer: `
+\`\`\`jsx
+import React, { useState, useEffect } from 'react';
+
+function Chat() {
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+        setMessages(m => [...m, 'New message from server!']);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const sendMessage = () => {
+    setMessages([...messages, newMessage]);
+    setNewMessage('');
+  };
+  
+  return (
+    <div>
+      <ul>
+        {messages.map((msg, i) => <li key={i}>{msg}</li>)}
+      </ul>
+      <input value={newMessage} onChange={e => setNewMessage(e.target.value)} />
+      <button onClick={sendMessage}>Send</button>
+    </div>
+  );
+}
+
+export default Chat;
+\`\`\`
+`
+    }
 ];
 
 const reactPath: Topic[] = [
@@ -1436,7 +2293,191 @@ Each Vue component instance goes through a series of initialization steps. Lifec
   - **Better Type Inference:** Provides much better TypeScript support.
   - **Smaller Bundle Size:** More friendly to tree-shaking.
 `
-  }
+    },
+    {
+        id: "vue-directives",
+        type: "theoretical",
+        question: "What are Vue directives? Give examples (v-if, v-for, v-bind, v-on, v-model).",
+        answer: `**Answer Guidance:**
+
+- **Vue Directives:** Special attributes with the \`v-\` prefix. Their job is to reactively apply side effects to the DOM when the value of its expression changes.
+- **Examples:**
+  - **\`v-if\`, \`v-else-if\`, \`v-else\`:** Conditionally render a block.
+  - **\`v-for\`:** Render a list of items based on an array.
+  - **\`v-bind\`:** Reactively update an HTML attribute. (Shorthand: \`:\`)
+  - **\`v-on\`:** Attach an event listener. (Shorthand: \`@\`)
+  - **\`v-model\`:** Create two-way data binding on form inputs.
+`
+    },
+    {
+        id: "reactive-data-binding-vue",
+        type: "theoretical",
+        question: "Explain reactive data binding in Vue. How does Vue detect changes?",
+        answer: `**Answer Guidance:**
+
+- **Vue 3:** Uses JavaScript Proxies. When you define data in a component, Vue wraps it in a Proxy. When you access or modify a property, the proxy intercepts the operation, allowing Vue to track dependencies and trigger updates when data changes.
+- **Vue 2:** Used \`Object.defineProperty\`. It iterated over all properties in \`data\` and converted them to getter/setters.
+`
+    },
+    {
+        id: 'vue-template-syntax',
+        type: 'theoretical',
+        question: 'What is the Vue template syntax?',
+        answer: `**Answer Guidance:**
+
+Vue uses an HTML-based template syntax that allows you to declaratively bind the rendered DOM to the underlying component instance's data. It includes text interpolation (\`{{...}}\`), attribute bindings (\`v-bind\`), and structural directives (\`v-if\`, \`v-for\`).
+`
+    },
+    {
+        id: 'computed-vs-watchers',
+        type: 'theoretical',
+        question: 'Describe computed properties and watchers. When would you use each?',
+        answer: `**Answer Guidance:**
+
+- **Computed Properties:** Declarative way to derive state from other state. They are cached based on their reactive dependencies. Use them when you need to calculate a value based on other properties.
+- **Watchers:** Allow you to perform side effects in response to a data change (e.g., fetching data, manual DOM manipulation). Use them when you need to perform an action when a specific property changes.
+`
+    },
+    {
+        id: 'data-vs-props',
+        type: 'theoretical',
+        question: 'What is the difference between data and props in Vue?',
+        answer: `**Answer Guidance:**
+
+- **Props:** Used to pass data from a parent component to a child component. A child component should not mutate its props.
+- **Data:** The private, reactive state of a component. It can be changed within the component.
+`
+    },
+    {
+        id: 'vue-component-communication',
+        type: 'theoretical',
+        question: 'How does Vue handle component communication? ($emit, $parent, $children, provide/inject, Vuex).',
+        answer: `**Answer Guidance:**
+
+- **Parent to Child:** Props.
+- **Child to Parent:** Emitting events with \`$emit\`.
+- **Provide/Inject:** For passing data through a deep component tree.
+- **State Management Libraries (Pinia/Vuex):** For global state management.
+`
+    },
+    {
+        id: 'virtual-dom-vue',
+        type: 'theoretical',
+        question: 'What is the Virtual DOM in Vue? How does it work?',
+        answer: `**Answer Guidance:**
+
+Similar to React, Vue uses a Virtual DOM. When data changes, Vue creates a new VDOM tree, compares it with the old one, and calculates the most efficient way to update the real DOM.
+`
+    },
+    {
+        id: 'vue-reactivity-system',
+        type: 'theoretical',
+        question: "Explain Vue's reactivity system. (Vue 2 vs. Vue 3).",
+        answer: `**Answer Guidance:**
+
+- **Vue 2:** Used \`Object.defineProperty\` to track changes. This had limitations, such as not being able to detect new property additions.
+- **Vue 3:** Uses modern JavaScript Proxies, which can intercept more operations and provide more robust and performant reactivity.
+`
+    },
+    {
+        id: 'vue-mixins-vs-composition',
+        type: 'theoretical',
+        question: 'What are Vue Mixins and how do they differ from Composition API?',
+        answer: `**Answer Guidance:**
+
+- **Mixins:** A way to distribute reusable functionalities for Vue components. However, they have drawbacks like property name collisions and unclear data sources.
+- **Composition API:** The modern and preferred way to reuse logic. It solves the problems of mixins by allowing you to encapsulate logic in "composable" functions, which are more explicit and flexible.
+`
+    },
+    {
+        id: 'state-management-vue',
+        type: 'theoretical',
+        question: 'Discuss state management in Vue. (Vuex, Pinia).',
+        answer: `**Answer Guidance:**
+
+- **Pinia:** The official and recommended state management library for Vue 3. It's simple, type-safe, and modular.
+- **Vuex:** The older official state management library. It's more verbose than Pinia and was primarily used with Vue 2.
+`
+    },
+    {
+        id: 'v-show-vs-v-if',
+        type: 'theoretical',
+        question: 'What is the difference between v-show and v-if?',
+        answer: `**Answer Guidance:**
+
+- **\`v-if\`:** "Real" conditional rendering. It ensures that the element and its children are destroyed and re-created when the condition changes.
+- **\`v-show\`:** Toggles the element's CSS \`display\` property. The element is always rendered, just hidden or shown. Use \`v-show\` if you need to toggle something frequently.
+`
+    },
+    {
+        id: 'v-model',
+        type: 'theoretical',
+        question: 'Explain the v-model directive. How does it work with form elements?',
+        answer: `**Answer Guidance:**
+
+\`v-model\` is syntactic sugar for two-way binding. On an input, it's equivalent to binding the \`value\` and listening for the \`input\` event.
+`
+    },
+    {
+        id: 'scoped-css',
+        type: 'theoretical',
+        question: 'What are scoped CSS in Vue? What problem do they solve?',
+        answer: `**Answer Guidance:**
+
+When you add the \`scoped\` attribute to a \`<style>\` tag in a Vue component, the CSS will only apply to elements of the current component. It prevents styles from leaking out and affecting other components.
+`
+    },
+    {
+        id: 'vue-routing',
+        type: 'theoretical',
+        question: 'How do you handle routing in Vue? (Vue Router).',
+        answer: `**Answer Guidance:**
+
+- **Vue Router:** The official router for Vue.js. It allows you to map components to different URL routes.
+`
+    },
+    {
+        id: 'ssr-vue',
+        type: 'theoretical',
+        question: 'What is Server-Side Rendering (SSR) in Vue? (Nuxt.js).',
+        answer: `**Answer Guidance:**
+
+- **SSR in Vue:** Rendering Vue components on the server to HTML.
+- **Nuxt.js:** A popular framework built on top of Vue that provides built-in SSR capabilities.
+`
+    },
+    {
+        id: 'vue-slots',
+        type: 'theoretical',
+        question: 'What are Slots in Vue? Explain named slots and scoped slots.',
+        answer: `**Answer Guidance:**
+
+- **Slots:** A mechanism for content distribution. They allow you to pass template fragments from a parent component into a child component.
+- **Named Slots:** Allow you to pass multiple content fragments to a child component.
+- **Scoped Slots:** Allow the child component to pass data back up to the parent's slot content.
+`
+    },
+    {
+        id: 'vue-performance',
+        type: 'theoretical',
+        question: 'How do you optimize Vue applications for performance? (Lazy loading, code splitting, memoization).',
+        answer: `**Answer Guidance:**
+
+- **Lazy Loading:** Loading components or routes only when they are needed.
+- **Code Splitting:** Splitting your code into smaller chunks that can be loaded on demand.
+- **Memoization:** Caching the results of expensive calculations (e.g., with computed properties).
+`
+    },
+    {
+        id: 'vue-custom-directives',
+        type: 'theoretical',
+        question: 'Explain the concept of directives. Can you create custom directives?',
+        answer: `**Answer Guidance:**
+
+- **Directives:** Special attributes with the \`v-\` prefix that apply reactive side effects.
+- **Custom Directives:** Yes, you can create your own custom directives to encapsulate DOM manipulations.
+`
+    }
 ];
 
 const vueCoding: Question[] = [
@@ -1501,7 +2542,540 @@ const handleSubmit = () => {
 </script>
 \`\`\`
 `
-  },
+    },
+    {
+        id: slugify("Implement a component that fetches data from an API and displays it in Vue. Include loading and error states."),
+        type: "coding",
+        question: "Implement a component that fetches data from an API and displays it. Include loading and error states.",
+        answer: `
+\`\`\`vue
+<template>
+  <div>
+    <p v-if="loading">Loading...</p>
+    <p v-if="error">Error: {{ error.message }}</p>
+    <div v-if="data">
+      <h2>{{ data.title }}</h2>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+
+const data = ref(null);
+const loading = ref(true);
+const error = ref(null);
+
+onMounted(async () => {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts/1');
+    if (!response.ok) throw new Error('Failed to fetch');
+    data.value = await response.json();
+  } catch (e) {
+    error.value = e;
+  } finally {
+    loading.value = false;
+  }
+});
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Create a reusable button component in Vue with different variants (primary, secondary)."),
+        type: "coding",
+        question: "Create a reusable button component with different variants (primary, secondary).",
+        answer: `
+\`\`\`vue
+<template>
+  <button :class="variantClass">
+    <slot></slot>
+  </button>
+</template>
+
+<script setup>
+import { computed } from 'vue';
+
+const props = defineProps({
+  variant: {
+    type: String,
+    default: 'primary'
+  }
+});
+
+const variantClass = computed(() => {
+  return {
+    'bg-blue-500 text-white': props.variant === 'primary',
+    'bg-gray-500 text-white': props.variant === 'secondary'
+  };
+});
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Build a modal component in Vue that can be toggled open and closed."),
+        type: "coding",
+        question: "Build a modal component in Vue that can be toggled open and closed.",
+        answer: `
+\`\`\`vue
+<template>
+  <div v-if="isOpen" class="modal-overlay">
+    <div class="modal-content">
+      <slot></slot>
+      <button @click="$emit('close')">Close</button>
+    </div>
+  </div>
+</template>
+
+<script setup>
+defineProps({
+  isOpen: Boolean
+});
+defineEmits(['close']);
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Implement a list component in Vue that renders a dynamic list of items, with functionality to add/remove items."),
+        type: "coding",
+        question: "Implement a list component that renders a dynamic list of items, with functionality to add/remove items.",
+        answer: `
+\`\`\`vue
+<template>
+  <div>
+    <input v-model="newItem" @keyup.enter="addItem" />
+    <button @click="addItem">Add</button>
+    <ul>
+      <li v-for="(item, index) in items" :key="index">
+        {{ item }}
+        <button @click="removeItem(index)">Remove</button>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const items = ref(['Apple', 'Banana']);
+const newItem = ref('');
+
+const addItem = () => {
+  if (newItem.value) {
+    items.value.push(newItem.value);
+    newItem.value = '';
+  }
+};
+
+const removeItem = (index) => {
+  items.value.splice(index, 1);
+};
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Create a toggle switch component in Vue."),
+        type: "coding",
+        question: "Create a toggle switch component.",
+        answer: `
+\`\`\`vue
+<template>
+  <button @click="isOn = !isOn">
+    {{ isOn ? 'ON' : 'OFF' }}
+  </button>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const isOn = ref(false);
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Build a pagination component in Vue for a list of items."),
+        type: "coding",
+        question: "Build a pagination component for a list of items.",
+        answer: `
+\`\`\`vue
+<template>
+  <div>
+    <button 
+      v-for="page in totalPages" 
+      :key="page" 
+      @click="$emit('page-change', page)"
+    >
+      {{ page }}
+    </button>
+  </div>
+</template>
+
+<script setup>
+import { computed } from 'vue';
+
+const props = defineProps({
+  totalItems: Number,
+  itemsPerPage: Number,
+});
+
+const totalPages = computed(() => Math.ceil(props.totalItems / props.itemsPerPage));
+
+defineEmits(['page-change']);
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Implement a search filter in Vue for a list of items."),
+        type: "coding",
+        question: "Implement a search filter for a list of items.",
+        answer: `
+\`\`\`vue
+<template>
+  <div>
+    <input v-model="searchTerm" placeholder="Search..." />
+    <ul>
+      <li v-for="item in filteredItems" :key="item">{{ item }}</li>
+    </ul>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue';
+
+const searchTerm = ref('');
+const allItems = ref(['Apple', 'Banana', 'Cherry']);
+
+const filteredItems = computed(() => 
+  allItems.value.filter(item => 
+    item.toLowerCase().includes(searchTerm.value.toLowerCase())
+  )
+);
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Create a simple quiz application in Vue with multiple questions and scoring."),
+        type: "coding",
+        question: "Create a simple quiz application with multiple questions and scoring.",
+        answer: `
+\`\`\`vue
+<template>
+  <div v-if="!isFinished">
+    <h2>{{ currentQuestion.question }}</h2>
+    <input v-model="userAnswer" />
+    <button @click="submitAnswer">Submit</button>
+  </div>
+  <h2 v-else>Quiz Over! Score: {{ score }}</h2>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue';
+
+const questions = ref([
+  { question: 'What is 2 + 2?', answer: '4' },
+  { question: 'Capital of France?', answer: 'Paris' }
+]);
+const currentIndex = ref(0);
+const score = ref(0);
+const userAnswer = ref('');
+
+const currentQuestion = computed(() => questions.value[currentIndex.value]);
+const isFinished = computed(() => currentIndex.value >= questions.value.length);
+
+const submitAnswer = () => {
+  if (userAnswer.value.toLowerCase() === currentQuestion.value.answer.toLowerCase()) {
+    score.value++;
+  }
+  userAnswer.value = '';
+  currentIndex.value++;
+};
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Build a form in Vue with validation using custom logic."),
+        type: "coding",
+        question: "Build a form with validation using Vue's built-in validation or custom logic.",
+        answer: `
+\`\`\`vue
+<template>
+  <form @submit.prevent="submitForm">
+    <input v-model="email" />
+    <p v-if="error">{{ error }}</p>
+    <button type="submit">Submit</button>
+  </form>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const email = ref('');
+const error = ref('');
+
+const submitForm = () => {
+  if (!/\\S+@\\S+\\.\\S+/.test(email.value)) {
+    error.value = 'Invalid email';
+  } else {
+    error.value = '';
+    alert('Submitted');
+  }
+};
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Implement a component in Vue that listens to window resize events and updates its data."),
+        type: "coding",
+        question: "Implement a component that listens to window resize events and updates its data.",
+        answer: `
+\`\`\`vue
+<template>
+  <p>Width: {{ width }}</p>
+</template>
+
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue';
+
+const width = ref(window.innerWidth);
+const onResize = () => { width.value = window.innerWidth; };
+
+onMounted(() => window.addEventListener('resize', onResize));
+onUnmounted(() => window.removeEventListener('resize', onResize));
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Create a component in Vue that uses provide/inject to share data."),
+        type: "coding",
+        question: "Create a component that uses provide/inject to share data between components without prop drilling.",
+        answer: `
+\`\`\`vue
+// Parent.vue
+<template>
+  <Child />
+</template>
+<script setup>
+import { provide } from 'vue';
+import Child from './Child.vue';
+provide('theme', 'dark');
+</script>
+
+// Child.vue
+<template>
+  <p>Theme: {{ theme }}</p>
+</template>
+<script setup>
+import { inject } from 'vue';
+const theme = inject('theme');
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Build a component in Vue that fetches data and caches it."),
+        type: "coding",
+        question: "Build a component that fetches data and caches it using a computed property or watcher.",
+        answer: `
+\`\`\`vue
+<template>
+  <!-- ... -->
+</template>
+
+<script setup>
+import { ref, computed } from 'vue';
+
+const cache = new Map();
+const userId = ref(1);
+
+const userData = computed(async () => {
+    if (cache.has(userId.value)) {
+        return cache.get(userId.value);
+    }
+    const res = await fetch(\`.../\${userId.value}\`);
+    const data = await res.json();
+    cache.set(userId.value, data);
+    return data;
+});
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Implement a component in Vue that uses v-once."),
+        type: "coding",
+        question: "Implement a component that uses v-once or a memoization technique to optimize rendering for a static list item.",
+        answer: `
+\`\`\`vue
+<template>
+  <p v-once>This will never change: {{ message }}</p>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const message = ref('Initial message');
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Create a custom directive in Vue."),
+        type: "coding",
+        question: "Create a custom directive (e.g., for lazy loading images).",
+        answer: `
+\`\`\`vue
+<template>
+  <img v-lazy-load="'image-url.jpg'" />
+</template>
+
+<script setup>
+const vLazyLoad = {
+  mounted: (el, binding) => {
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        el.src = binding.value;
+        observer.unobserve(el);
+      }
+    });
+    observer.observe(el);
+  }
+};
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Build a dropdown component in Vue with keyboard navigation."),
+        type: "coding",
+        question: "Build a dropdown component with keyboard navigation.",
+        answer: `
+\`\`\`vue
+<template>
+  <div>
+    <button @click="isOpen = !isOpen">Toggle</button>
+    <ul v-if="isOpen" @keydown="onKeydown">
+      <li 
+        v-for="(option, i) in options" 
+        :key="option" 
+        :class="{ focused: i === focusedIndex }"
+      >
+        {{ option }}
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const options = ['A', 'B', 'C'];
+const isOpen = ref(false);
+const focusedIndex = ref(-1);
+
+const onKeydown = (e) => {
+  if (e.key === 'ArrowDown') {
+    focusedIndex.value = (focusedIndex.value + 1) % options.length;
+  } else if (e.key === 'ArrowUp') {
+    focusedIndex.value = (focusedIndex.value - 1 + options.length) % options.length;
+  }
+};
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Implement a drag-and-drop functionality in Vue for list items."),
+        type: "coding",
+        question: "Implement a drag-and-drop functionality for list items.",
+        answer: `
+\`\`\`vue
+<template>
+  <ul>
+    <li 
+      v-for="(item, index) in items" 
+      :key="item" 
+      draggable="true" 
+      @dragstart="dragStart(index)" 
+      @dragover.prevent 
+      @drop="drop(index)"
+    >
+      {{ item }}
+    </li>
+  </ul>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const items = ref(['A', 'B', 'C']);
+const draggingIndex = ref(null);
+
+const dragStart = (index) => { draggingIndex.value = index; };
+const drop = (index) => {
+  const item = items.value.splice(draggingIndex.value, 1)[0];
+  items.value.splice(index, 0, item);
+};
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Create a component in Vue that displays a progress bar."),
+        type: "coding",
+        question: "Create a component that displays a progress bar based on some value.",
+        answer: `
+\`\`\`vue
+<template>
+  <div class="progress-container">
+    <div class="progress-bar" :style="{ width: value + '%' }"></div>
+  </div>
+</template>
+
+<script setup>
+defineProps({ value: Number });
+</script>
+\`\`\`
+`
+    },
+    {
+        id: slugify("Build a simple chat interface in Vue where messages appear in real-time."),
+        type: "coding",
+        question: "Build a simple chat interface where messages appear in real-time (simulate with setInterval).",
+        answer: `
+\`\`\`vue
+<template>
+  <div>
+    <ul>
+      <li v-for="(msg, i) in messages" :key="i">{{ msg }}</li>
+    </ul>
+    <input v-model="newMessage" @keyup.enter="sendMessage" />
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+const messages = ref([]);
+const newMessage = ref('');
+
+onMounted(() => {
+  setInterval(() => {
+    messages.value.push('Server message');
+  }, 3000);
+});
+
+const sendMessage = () => {
+  messages.value.push(newMessage.value);
+  newMessage.value = '';
+};
+</script>
+\`\`\`
+`
+    }
 ];
 
 const vuePath: Topic[] = [
@@ -1558,7 +3132,207 @@ const systemDesignTheoretical: Question[] = [
   - **CDN:** Serve all media (images, videos) from a CDN.
   - **Message Queues:** Use queues (like Kafka) for the fan-out process to handle load spikes.
 `
-  }
+    },
+    {
+        id: "chat-application",
+        type: "theoretical",
+        question: "Design a chat application. (Consider real-time communication, user presence, message history).",
+        answer: `**Answer Guidance:**
+
+- **Real-time Communication:** WebSockets are essential for instant message delivery.
+- **User Presence:** A system to track if a user is online or offline. This can be done by maintaining a connection status in a cache like Redis.
+- **Message History:** Store messages in a database. For large-scale apps, a NoSQL database like Cassandra is a good choice for its write performance.
+- **Scalability:** Use load balancers to distribute WebSocket connections across multiple servers.
+`
+    },
+    {
+        id: "e-commerce-platform",
+        type: "theoretical",
+        question: "Design an e-commerce platform. (Consider product catalog, user accounts, shopping cart, order processing, payments).",
+        answer: `**Answer Guidance:**
+
+- **Product Catalog:** A service to manage product information.
+- **User Accounts:** A service for user authentication and profile management.
+- **Shopping Cart:** A service to manage users' shopping carts. Carts can be stored temporarily in a cache like Redis.
+- **Order Processing:** A service to handle orders, which involves coordinating with inventory, payment, and shipping services.
+- **Payments:** Integrate with a third-party payment gateway like Stripe or PayPal.
+`
+    },
+    {
+        id: "rate-limiter",
+        type: "theoretical",
+        question: "Design a rate limiter. (Consider how to limit API requests from users or services).",
+        answer: `**Answer Guidance:**
+
+- **Algorithm:** Token bucket or leaky bucket algorithms are common.
+- **Storage:** Use a fast in-memory store like Redis to keep track of request counts for each user/IP.
+- **Implementation:** A rate limiter can be implemented as a middleware in your API gateway.
+`
+    },
+    {
+        id: "notification-system",
+        type: "theoretical",
+        question: "Design a notification system. (Consider push notifications, email notifications, in-app notifications).",
+        answer: `**Answer Guidance:**
+
+- **Components:**
+  - **Notification Service:** An API to send notifications.
+  - **Message Queue:** To handle the asynchronous sending of notifications.
+  - **Third-party Services:** For sending push notifications (e.g., Firebase Cloud Messaging) and emails (e.g., SendGrid).
+`
+    },
+    {
+        id: "collaborative-editor",
+        type: "theoretical",
+        question: "Design a real-time collaborative document editor. (e.g., Google Docs).",
+        answer: `**Answer Guidance:**
+
+- **Collaboration:** Use Operational Transformation (OT) or Conflict-free Replicated Data Types (CRDTs) to resolve concurrent edits from multiple users.
+- **Communication:** WebSockets for real-time updates.
+- **Backend:** A server to manage document state and broadcast changes.
+`
+    },
+    {
+        id: "background-jobs",
+        type: "theoretical",
+        question: "Design a system for processing background jobs. (e.g., sending emails, generating reports).",
+        answer: `**Answer Guidance:**
+
+- **Components:**
+  - **Message Queue:** (e.g., RabbitMQ, SQS) to queue up jobs.
+  - **Workers:** A pool of servers that pull jobs from the queue and process them.
+- **Benefits:** Decouples long-running tasks from the main application, improving responsiveness.
+`
+    },
+    {
+        id: "social-media-profile",
+        type: "theoretical",
+        question: "Design a social media platform's user profile page. (Consider data fetching, rendering, performance).",
+        answer: `**Answer Guidance:**
+
+- **Data Fetching:** Aggregate data from multiple services (user info, posts, followers).
+- **Rendering:** Server-side rendering (SSR) for initial load performance and SEO.
+- **Performance:** Use a CDN for images, and cache profile data.
+`
+    },
+    {
+        id: "image-uploading",
+        type: "theoretical",
+        question: "Design a system for image uploading and processing. (Consider storage, resizing, formats, CDN).",
+        answer: `**Answer Guidance:**
+
+- **Storage:** Use a cloud storage service like Amazon S3 or Google Cloud Storage.
+- **Processing:** Use background workers to process images (resizing, watermarking).
+- **CDN:** Serve images from a CDN for fast delivery.
+`
+    },
+    {
+        id: "handling-millions-of-users",
+        type: "theoretical",
+        question: "How would you design a system to handle millions of concurrent users?",
+        answer: `**Answer Guidance:**
+
+- **Horizontal Scaling:** Add more servers.
+- **Load Balancing:** Distribute traffic across servers.
+- **Caching:** Use caching at multiple levels (database, API, CDN).
+- **Asynchronous Processing:** Use message queues for background jobs.
+- **Database Scaling:** Use sharding and read replicas.
+`
+    },
+    {
+        id: "caching-strategies",
+        type: "theoretical",
+        question: "Discuss strategies for caching data to improve performance.",
+        answer: `**Answer Guidance:**
+
+- **Cache-Aside:** The application is responsible for reading and writing from the cache.
+- **Read-Through:** The cache is responsible for reading data from the database.
+- **Write-Through:** Data is written to the cache and the database at the same time.
+- **Write-Back:** Data is written to the cache, and the cache writes it to the database later.
+`
+    },
+    {
+        id: "horizontal-vs-vertical-scaling",
+        type: "theoretical",
+        question: "Explain the concept of horizontal vs. vertical scaling.",
+        answer: `**Answer Guidance:**
+
+- **Vertical Scaling:** Increasing the resources of a single server (e.g., more CPU, RAM).
+- **Horizontal Scaling:** Adding more servers to a pool of resources.
+`
+    },
+    {
+        id: "microservices-vs-monolith",
+        type: "theoretical",
+        question: "What are microservices? What are their pros and cons compared to a monolithic architecture?",
+        answer: `**Answer Guidance:**
+
+- **Monolith:** A single, unified application.
+- **Microservices:** An architectural style that structures an application as a collection of small, independent services.
+- **Pros of Microservices:** Scalability, flexibility, independent deployment.
+- **Cons of Microservices:** Complexity, operational overhead.
+`
+    },
+    {
+        id: "api-gateway",
+        type: "theoretical",
+        question: "How would you design an API gateway for a set of microservices?",
+        answer: `**Answer Guidance:**
+
+An API gateway is a single entry point for all clients. It can handle routing, authentication, rate limiting, and other cross-cutting concerns.
+`
+    },
+    {
+        id: "data-consistency",
+        type: "theoretical",
+        question: "Discuss strategies for ensuring data consistency in a distributed system.",
+        answer: `**Answer Guidance:**
+
+- **Strong Consistency:** All clients see the same data at the same time. This can be slow.
+- **Eventual Consistency:** Over time, all replicas of the data will become consistent. This is often a good trade-off for performance.
+`
+    },
+    {
+        id: "search-engine-design",
+        type: "theoretical",
+        question: "How would you design a search engine or recommendation system?",
+        answer: `**Answer Guidance:**
+
+- **Search Engine:** Involves web crawling, indexing (e.g., using Elasticsearch), and ranking.
+- **Recommendation System:** Can use collaborative filtering (based on user behavior) or content-based filtering (based on item attributes).
+`
+    },
+    {
+        id: "load-balancers",
+        type: "theoretical",
+        question: "What are load balancers? What are different types of load balancing?",
+        answer: `**Answer Guidance:**
+
+- **Load Balancer:** A device that distributes network or application traffic across a number of servers.
+- **Types:** Round Robin, Least Connections, IP Hash.
+`
+    },
+    {
+        id: "high-availability-design",
+        type: "theoretical",
+        question: "How would you approach designing a system that needs to be highly available and fault-tolerant?",
+        answer: `**Answer Guidance:**
+
+- **Redundancy:** Have multiple copies of each component.
+- **Failover:** Automatically switch to a redundant component if one fails.
+- **Monitoring and Alerting:** To detect failures quickly.
+`
+    },
+    {
+        id: "authentication-authorization",
+        type: "theoretical",
+        question: "Describe how you would implement authentication and authorization in a web application.",
+        answer: `**Answer Guidance:**
+
+- **Authentication:** Verifying who a user is. Common methods include passwords, OAuth, and JWTs.
+- **Authorization:** Determining what an authenticated user is allowed to do. This can be managed with roles and permissions.
+`
+    }
 ];
 
 const systemDesignPath: Topic[] = [

@@ -9,6 +9,43 @@ import {
 } from '@/components/ui/card';
 import { Lightbulb, CheckCircle } from 'lucide-react';
 
+
+function renderAnswer(answer: string) {
+    const codeBlockRegex = /```(javascript|jsx|vue|html|bash|json)?\s*([\s\S]*?)```/g;
+    const parts = answer.split(codeBlockRegex);
+
+    return parts.map((part, index) => {
+        const isCode = index % 3 === 2;
+        const isLang = index % 3 === 1;
+
+        if (isCode) {
+            return (
+                <pre key={index}>
+                    <code>{part.trim()}</code>
+                </pre>
+            );
+        }
+        
+        if (isLang) return null;
+
+        return part.split('\n').map((line, lineIndex) => {
+            const trimmedLine = line.trim();
+            if (trimmedLine) {
+                // Bold text between **
+                const boldRegex = /\*\*(.*?)\*\*/g;
+                const boldedLine = trimmedLine.replace(boldRegex, '<strong>$1</strong>');
+                
+                // Inline code between `
+                const inlineCodeRegex = /`([^`]+)`/g;
+                const finalLine = boldedLine.replace(inlineCodeRegex, '<code>$1</code>');
+
+                return <p key={`${index}-${lineIndex}`} dangerouslySetInnerHTML={{ __html: finalLine }} />;
+            }
+            return null;
+        });
+    });
+}
+
 export default function ChallengeDetailPage({
   params,
 }: {
@@ -19,9 +56,6 @@ export default function ChallengeDetailPage({
   if (!challenge) {
     notFound();
   }
-
-  const codeBlockRegex = /```(javascript|jsx|vue|html|bash|json)?\s*([\s\S]*?)```/g;
-  const parts = challenge.answer.split(codeBlockRegex);
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in-50">
@@ -55,21 +89,7 @@ export default function ChallengeDetailPage({
         </CardHeader>
         <CardContent>
           <div className="prose prose-sm max-w-none dark:prose-invert">
-            {parts.map((part, index) => {
-              if (index % 3 === 2) { // The captured code block
-                return (
-                  <pre key={index}>
-                    <code>{part.trim()}</code>
-                  </pre>
-                );
-              }
-              if (index % 3 === 0) { // The text before/after code blocks
-                return part.split('\n').map((line, lineIndex) => (
-                    <p key={`${index}-${lineIndex}`}>{line.replace(/`([^`]+)`/g, '<code>$1</code>')}</p>
-                ));
-              }
-              return null; // The language part, which we ignore
-            })}
+            {renderAnswer(challenge.answer)}
           </div>
         </CardContent>
       </Card>
