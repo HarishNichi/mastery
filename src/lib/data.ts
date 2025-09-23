@@ -2640,7 +2640,7 @@ defineEmits(['close']);
     {
         id: slugify("Implement a list component in Vue that renders a dynamic list of items, with functionality to add/remove items."),
         type: "coding",
-        question: "Implement a list component that renders a dynamic list of items, with functionality to add/remove items.",
+        question: "Implement a list component in Vue that renders a dynamic list of items, with functionality to add/remove items.",
         answer: `
 \`\`\`vue
 <template>
@@ -2698,7 +2698,7 @@ const isOn = ref(false);
     {
         id: slugify("Build a pagination component in Vue for a list of items."),
         type: "coding",
-        question: "Build a pagination component for a list of items.",
+        question: "Build a pagination component in Vue for a list of items.",
         answer: `
 \`\`\`vue
 <template>
@@ -2731,7 +2731,7 @@ defineEmits(['page-change']);
     {
         id: slugify("Implement a search filter in Vue for a list of items."),
         type: "coding",
-        question: "Implement a search filter for a list of items.",
+        question: "Implement a search filter in Vue for a list of items.",
         answer: `
 \`\`\`vue
 <template>
