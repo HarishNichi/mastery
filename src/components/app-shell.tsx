@@ -52,20 +52,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 : pathname.startsWith(item.href);
             return (
               <SidebarMenuItem key={item.href}>
-                <Link
-                  href={item.href}
-                  legacyBehavior
-                  passHref
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActive}
+                  tooltip={{ children: item.label, side: 'right' }}
                   onClick={() => isMobile && setMobileMenuOpen(false)}
                 >
-                  <SidebarMenuButton
-                    isActive={isActive}
-                    tooltip={{ children: item.label, side: 'right' }}
-                  >
+                  <Link href={item.href}>
                     <item.icon className="h-4 w-4" />
                     <span>{item.label}</span>
-                  </SidebarMenuButton>
-                </Link>
+                  </Link>
+                </SidebarMenuButton>
               </SidebarMenuItem>
             );
           })}
