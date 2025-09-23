@@ -1,9 +1,8 @@
 'use client';
 
-import { useMemo, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import { learningPaths } from '@/lib/data';
-import type { Question } from '@/lib/types';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -22,10 +21,7 @@ export default function PathDetailPage({
 }: {
   params: { pathId: string };
 }) {
-  const path = useMemo(
-    () => learningPaths.find((p) => p.id === params.pathId),
-    [params.pathId]
-  );
+  const path = learningPaths.find((p) => p.id === params.pathId);
 
   const [completedQuestions, setCompletedQuestions] = useState<Set<string>>(
     new Set()
@@ -75,15 +71,11 @@ export default function PathDetailPage({
     });
   };
 
-  const totalQuestions = useMemo(
-    () => path.topics.reduce((sum, topic) => sum + topic.questions.length, 0),
-    [path.topics]
-  );
+  const totalQuestions =
+    path.topics.reduce((sum, topic) => sum + topic.questions.length, 0);
   
-  const progress = useMemo(() => {
-    if (totalQuestions === 0) return 0;
-    return (completedQuestions.size / totalQuestions) * 100;
-  }, [completedQuestions, totalQuestions]);
+  const progress =
+    isClient && totalQuestions > 0 ? (completedQuestions.size / totalQuestions) * 100 : 0;
 
   const theoreticalQuestions =
     path.topics.find((t) => t.id.includes('theoretical'))?.questions || [];
@@ -107,7 +99,7 @@ export default function PathDetailPage({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Progress value={isClient ? progress : 0} />
+          <Progress value={progress} />
         </CardContent>
       </Card>
 
