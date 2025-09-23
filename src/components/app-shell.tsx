@@ -73,33 +73,35 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   if (isMobile) {
     return (
-      <div className="flex min-h-screen w-full flex-col">
-        <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-30">
-          <nav className="flex w-full items-center justify-between">
-            <Link
-              href="/"
-              className="flex items-center gap-2 font-headline text-lg font-semibold"
-            >
-              <Feather className="h-6 w-6 text-primary" />
-              <span className="sr-only">Mastery Tracks</span>
-            </Link>
-            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Toggle navigation menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="p-0">
-                <div className="flex h-full flex-col">{sidebarContent}</div>
-              </SheetContent>
-            </Sheet>
-          </nav>
-        </header>
-        <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-          {children}
-        </main>
-      </div>
+      <SidebarProvider>
+        <div className="flex min-h-screen w-full flex-col">
+          <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-30">
+            <nav className="flex w-full items-center justify-between">
+              <Link
+                href="/"
+                className="flex items-center gap-2 font-headline text-lg font-semibold"
+              >
+                <Feather className="h-6 w-6 text-primary" />
+                <span className="sr-only">Mastery Tracks</span>
+              </Link>
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Menu className="h-5 w-5" />
+                    <span className="sr-only">Toggle navigation menu</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="p-0">
+                  <div className="flex h-full flex-col">{sidebarContent}</div>
+                </SheetContent>
+              </Sheet>
+            </nav>
+          </header>
+          <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+            {children}
+          </main>
+        </div>
+      </SidebarProvider>
     );
   }
 
