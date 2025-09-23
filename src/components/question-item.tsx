@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -68,15 +69,15 @@ export function QuestionItem({
         value={question.id}
         className="border rounded-lg bg-card"
       >
-        <AccordionTrigger className="p-4 text-left hover:no-underline">
-          <div className="flex items-start gap-4">
-            <span onClick={handleCheckboxClick} className="flex h-6 items-center">
+        <div className="flex items-center p-4">
+            <span onClick={handleCheckboxClick} className="flex h-6 items-center pr-4">
               <Checkbox id={`check-${question.id}`} checked={isCompleted} />
             </span>
-            <span className="flex-1">{question.question}</span>
-          </div>
-        </AccordionTrigger>
-        <AccordionContent className="p-4 pt-0">
+            <AccordionTrigger className="p-0 text-left hover:no-underline flex-1">
+                <span className="flex-1">{question.question}</span>
+            </AccordionTrigger>
+        </div>
+        <AccordionContent className="p-4 pt-0 pl-14">
           <div className="prose prose-sm max-w-none dark:prose-invert">
             {renderAnswer(question.answer)}
           </div>
