@@ -2295,9 +2295,9 @@ Each Vue component instance goes through a series of initialization steps. Lifec
 `
     },
     {
-        id: "vue-directives",
-        type: "theoretical",
-        question: "What are Vue directives? Give examples (v-if, v-for, v-bind, v-on, v-model).",
+        id: 'vue-directives',
+        type: 'theoretical',
+        question: 'What are Vue directives? Give examples (v-if, v-for, v-bind, v-on, v-model).',
         answer: `**Answer Guidance:**
 
 - **Vue Directives:** Special attributes with the \`v-\` prefix. Their job is to reactively apply side effects to the DOM when the value of its expression changes.
@@ -2310,7 +2310,7 @@ Each Vue component instance goes through a series of initialization steps. Lifec
 `
     },
     {
-        id: "reactive-data-binding-vue",
+        id: "vue-reactivity-system",
         type: "theoretical",
         question: "Explain reactive data binding in Vue. How does Vue detect changes?",
         answer: `**Answer Guidance:**
@@ -2584,7 +2584,7 @@ onMounted(async () => {
     {
         id: slugify("Create a reusable button component in Vue with different variants (primary, secondary)."),
         type: "coding",
-        question: "Create a reusable button component with different variants (primary, secondary).",
+        question: "Create a reusable button component in Vue with different variants (primary, secondary).",
         answer: `
 \`\`\`vue
 <template>
@@ -2761,7 +2761,7 @@ const filteredItems = computed(() =>
     {
         id: slugify("Create a simple quiz application in Vue with multiple questions and scoring."),
         type: "coding",
-        question: "Create a simple quiz application with multiple questions and scoring.",
+        question: "Create a simple quiz application in Vue with multiple questions and scoring.",
         answer: `
 \`\`\`vue
 <template>
@@ -3084,6 +3084,33 @@ const vuePath: Topic[] = [
 ];
 
 const systemDesignTheoretical: Question[] = [
+  {
+    id: "what-is-system-design",
+    type: "theoretical",
+    question: "What is System Design? Explain its purpose and key principles.",
+    answer: `**Answer Guidance:**
+
+- **What is System Design?**
+  - System design is the process of defining the architecture, components, modules, interfaces, and data for a system to satisfy specified requirements. It's about making high-level choices that will dictate how the system is built.
+
+- **Purpose of System Design:**
+  - To build systems that are **scalable** (can handle growing amounts of work), **reliable** (operate correctly and consistently), and **maintainable** (easy to fix and update).
+  - To manage the complexity of large systems by breaking them down into smaller, manageable parts.
+  - To satisfy both functional (what the system does) and non-functional (how the system does it, e.g., performance, availability, security) requirements.
+
+- **Types of System Design Questions:**
+  - **Product Design:** Designing a specific product like a URL shortener, a Twitter feed, or a chat application. These questions test your ability to translate requirements into a technical design.
+  - **Concept Design:** Designing a generic system component like a rate limiter, a notification system, or a caching strategy. These questions test your understanding of fundamental architectural patterns.
+
+- **Key Principles:**
+  - **Scalability:** The ability of a system to handle increased load. (Horizontal vs. Vertical scaling).
+  - **Availability:** The percentage of time a system is operational. Often achieved through redundancy and failover.
+  - **Performance:** The speed and responsiveness of the system. (Latency, throughput).
+  - **Consistency:** Ensuring that all clients see the same data at the same time. (Strong vs. Eventual consistency).
+  - **Durability:** Ensuring that data, once committed, is not lost.
+  - **Decoupling:** Reducing the dependencies between components, often using message queues or APIs.
+`
+  },
   {
     id: "url-shortener",
     type: "theoretical",
