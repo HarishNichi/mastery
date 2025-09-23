@@ -52,7 +52,7 @@ const prompt = ai.definePrompt({
   Based on this information, provide an assessment of the user's current understanding and then offer tailored learning resources and exercises to improve their skills in the specified topic. Focus on practical exercises to develop proficiency.
 
   {{zodFormat instruction=true}}
-  `, 
+  `,
 });
 
 const personalizedJavascriptTutorFlow = ai.defineFlow(
