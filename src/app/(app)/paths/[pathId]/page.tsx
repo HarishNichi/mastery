@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { notFound } from 'next/navigation';
+import { useState, useEffect, useMemo } from 'react';
+import { notFound, useParams } from 'next/navigation';
 import { learningPaths } from '@/lib/data';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -16,19 +16,21 @@ import { QuestionItem } from '@/components/question-item';
 
 const LOCAL_STORAGE_KEY_PREFIX = 'mastery_tracks_progress_';
 
-export default function PathDetailPage({
-  params,
-}: {
-  params: { pathId: string };
-}) {
-  const path = learningPaths.find((p) => p.id === params.pathId);
+export default function PathDetailPage() {
+  const params = useParams();
+  const pathId = params.pathId as string;
+
+  const path = useMemo(
+    () => learningPaths.find((p) => p.id === pathId),
+    [pathId]
+  );
 
   const [completedQuestions, setCompletedQuestions] = useState<Set<string>>(
     new Set()
   );
   const [isClient, setIsClient] = useState(false);
 
-  const storageKey = `${LOCAL_STORAGE_KEY_PREFIX}${params.pathId}`;
+  const storageKey = `${LOCAL_STORAGE_KEY_PREFIX}${pathId}`;
 
   useEffect(() => {
     setIsClient(true);
