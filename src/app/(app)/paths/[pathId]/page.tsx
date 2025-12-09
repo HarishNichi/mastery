@@ -132,6 +132,7 @@ export default function PathDetailPage() {
                 question={q}
                 isCompleted={completedQuestions.has(q.id)}
                 onToggle={handleToggleQuestion}
+                isCoding={true}
               />
             ))}
           </div>

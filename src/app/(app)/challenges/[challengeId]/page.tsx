@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { allCodingChallenges } from '@/lib/data';
-import { Textarea } from '@/components/ui/textarea';
+import { CodePlayground } from '@/components/code-playground';
 import {
   Card,
   CardContent,
@@ -16,30 +16,40 @@ function renderAnswer(answer: string) {
 
     return parts.map((part, index) => {
         const isCode = index % 3 === 2;
-        const isLang = index % 3 === 1;
+        const lang = index % 3 === 1;
 
         if (isCode) {
             return (
-                <pre key={index}>
-                    <code>{part.trim()}</code>
-                </pre>
+                <div key={index} className="my-6 rounded-md border bg-muted/50 p-4 shadow-sm overflow-hidden">
+                    <pre className="overflow-x-auto">
+                        <code className="text-sm font-mono leading-relaxed block">{part.trim()}</code>
+                    </pre>
+                </div>
             );
         }
         
-        if (isLang) return null;
+        if (lang) return null;
 
         return part.split('\n').map((line, lineIndex) => {
             const trimmedLine = line.trim();
             if (trimmedLine) {
-                // Bold text between **
+                // Bold text
                 const boldRegex = /\*\*(.*?)\*\*/g;
-                const boldedLine = trimmedLine.replace(boldRegex, '<strong>$1</strong>');
+                let finalLine = trimmedLine.replace(boldRegex, '<strong class="font-semibold text-foreground">$1</strong>');
                 
-                // Inline code between `
+                // Inline code
                 const inlineCodeRegex = /`([^`]+)`/g;
-                const finalLine = boldedLine.replace(inlineCodeRegex, '<code>$1</code>');
+                finalLine = finalLine.replace(inlineCodeRegex, '<code class="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">$1</code>');
 
-                return <p key={`${index}-${lineIndex}`} dangerouslySetInnerHTML={{ __html: finalLine }} />;
+                // List items (basic handling)
+                if (finalLine.startsWith('- ')) {
+                    finalLine = finalLine.substring(2);
+                    return (
+                        <li key={`${index}-${lineIndex}`} className="ml-4 list-disc pl-2 mb-2" dangerouslySetInnerHTML={{ __html: finalLine }} />
+                    );
+                }
+
+                return <p key={`${index}-${lineIndex}`} className="mb-4 text-base leading-7 text-foreground/90" dangerouslySetInnerHTML={{ __html: finalLine }} />;
             }
             return null;
         });
@@ -69,13 +79,12 @@ export default function ChallengeDetailPage({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Lightbulb className="h-5 w-5 text-accent" />
-            Your Solution
+            Code Playground
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Textarea
-            placeholder="Write your code here..."
-            className="font-code h-64"
+          <CodePlayground 
+            initialCode="// Write your solution here\n// console.log('Hello World!');\n" 
           />
         </CardContent>
       </Card>
@@ -88,7 +97,7 @@ export default function ChallengeDetailPage({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="prose prose-sm max-w-none dark:prose-invert">
+            <div className="prose prose-lg dark:prose-invert max-w-[65ch] prose-p:leading-loose prose-li:leading-loose prose-pre:bg-transparent prose-pre:p-0 prose-pre:m-0">
             {renderAnswer(challenge.answer)}
           </div>
         </CardContent>
