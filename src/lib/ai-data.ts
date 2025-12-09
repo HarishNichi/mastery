@@ -1318,12 +1318,598 @@ const managedMessages = await contextManager.manageContext(longConversation);
 console.log(\`Reduced from \${longConversation.length} to \${managedMessages.length} messages\`);
 
 // Use managedMessages in API call
+    this.model = model;
+    this.encoding = encoding_for_model(model);
+    
+    // Pricing per 1K tokens (as of 2024)
+    this.pricing = {
+      'gpt-4': { input: 0.03, output: 0.06 },
+      'gpt-4-turbo': { input: 0.01, output: 0.03 },
+      'gpt-3.5-turbo': { input: 0.0005, output: 0.0015 }
+    };
+  }
+
+  countTokens(text) {
+    const tokens = this.encoding.encode(text);
+    return tokens.length;
+  }
+
+  countMessagesTokens(messages) {
+    let totalTokens = 0;
+    
+    // Each message has some overhead tokens
+    const tokensPerMessage = this.model.startsWith('gpt-4') ? 3 : 4;
+    const tokensPerName = 1;
+    
+    for (const message of messages) {
+      totalTokens += tokensPerMessage;
+      totalTokens += this.countTokens(message.content || '');
+      totalTokens += this.countTokens(message.role);
+      if (message.name) {
+        totalTokens += tokensPerName;
+      }
+    }
+    
+    totalTokens += 3; // Every reply is primed with assistant
+    return totalTokens;
+  }
+
+  estimateCost(inputTokens, outputTokens) {
+    const pricing = this.pricing[this.model];
+    if (!pricing) return null;
+    
+    const inputCost = (inputTokens / 1000) * pricing.input;
+    const outputCost = (outputTokens / 1000) * pricing.output;
+    
+    return {
+      inputCost: inputCost.toFixed(6),
+      outputCost: outputCost.toFixed(6),
+      totalCost: (inputCost + outputCost).toFixed(6)
+    };
+  }
+
+  willFitInContext(text, contextWindow = 8192, reserveForOutput = 1000) {
+    const tokens = this.countTokens(text);
+    return tokens <= (contextWindow - reserveForOutput);
+  }
+
+  cleanup() {
+    this.encoding.free();
+  }
+}
+
+// Usage
+const counter = new TokenCounter('gpt-4');
+
+const text = "This is a sample text to count tokens.";
+console.log('Tokens:', counter.countTokens(text));
+
+const messages = [
+  { role: 'system', content: 'You are a helpful assistant.' },
+  { role: 'user', content: 'Hello, how are you?' }
+];
+console.log('Message tokens:', counter.countMessagesTokens(messages));
+
+const cost = counter.estimateCost(1000, 500);
+console.log('Estimated cost:', cost);
+
+console.log('Fits in 8K context?', counter.willFitInContext(text));
+
+counter.cleanup();
+\`\`\`
+`
+  },
+  {
+    id: slugify("Build a context management system for chat"),
+    type: "coding",
+    question: "Build a context management system that handles long conversations by intelligently truncating or summarizing old messages.",
+    answer: `**Implementation:**
+
+\`\`\`javascript
+import OpenAI from 'openai';
+import { encoding_for_model } from 'tiktoken';
+
+class ContextManager {
+  constructor(maxTokens = 4000, model = 'gpt-4') {
+    this.maxTokens = maxTokens;
+    this.model = model;
+    this.encoding = encoding_for_model(model);
+    this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  }
+
+  countTokens(text) {
+    return this.encoding.encode(text).length;
+  }
+
+  countMessagesTokens(messages) {
+    return messages.reduce((total, msg) => {
+      return total + this.countTokens(msg.content) + 4; // 4 tokens overhead per message
+    }, 3); // 3 tokens for priming
+  }
+
+  async summarizeOldMessages(messages) {
+    const messagesToSummarize = messages.slice(1, -5); // Keep first (system) and last 5
+    
+    const conversation = messagesToSummarize
+      .map(m => \`\${m.role}: \${m.content}\`)
+      .join('\\n');
+
+    const response = await this.openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        {
+          role: 'system',
+          content: 'Summarize this conversation concisely, preserving key points.'
+        },
+        { role: 'user', content: conversation }
+      ],
+      max_tokens: 200
+    });
+
+    return {
+      role: 'system',
+      content: \`Previous conversation summary: \${response.choices[0].message.content}\`
+    };
+  }
+
+  async manageContext(messages) {
+    const currentTokens = this.countMessagesTokens(messages);
+
+    if (currentTokens <= this.maxTokens) {
+      return messages; // Fits within limit
+    }
+
+    console.log(\`Context too large (\${currentTokens} tokens), managing...\`);
+
+    // Strategy 1: Remove middle messages, keep recent ones
+    if (messages.length > 10) {
+      const systemMsg = messages[0];
+      const recentMessages = messages.slice(-8); // Keep last 8 messages
+      
+      const truncated = [systemMsg, ...recentMessages];
+      const truncatedTokens = this.countMessagesTokens(truncated);
+      
+      if (truncatedTokens <= this.maxTokens) {
+        console.log('Used truncation strategy');
+        return truncated;
+      }
+    }
+
+    // Strategy 2: Summarize old messages
+    if (messages.length > 6) {
+      const systemMsg = messages[0];
+      const summary = await this.summarizeOldMessages(messages);
+      const recentMessages = messages.slice(-5);
+      
+      const summarized = [systemMsg, summary, ...recentMessages];
+      const summarizedTokens = this.countMessagesTokens(summarized);
+      
+      if (summarizedTokens <= this.maxTokens) {
+        console.log('Used summarization strategy');
+        return summarized;
+      }
+    }
+
+    // Strategy 3: Keep only system message and last message (emergency fallback)
+    console.log('Using emergency fallback');
+    return [messages[0], messages[messages.length - 1]];
+  }
+
+  cleanup() {
+    this.encoding.free();
+  }
+}
+
+// Usage
+const contextManager = new ContextManager(4000, 'gpt-4');
+
+const longConversation = [
+  { role: 'system', content: 'You are a helpful assistant.' },
+  // ... many messages ...
+  { role: 'user', content: 'New question' }
+];
+
+const managedMessages = await contextManager.manageContext(longConversation);
+console.log(\`Reduced from \${longConversation.length} to \${managedMessages.length} messages\`);
+
+// Use managedMessages in API call
 const response = await openai.chat.completions.create({
   model: 'gpt-4',
   messages: managedMessages
 });
 
-contextManager.cleanup();
+contextManager.cleanup();}
+\`\`\`
+`
+  },
+  {
+    id: slugify("Fine-tune a model using OpenAI API"),
+    type: "coding",
+    question: "Write a script to upload a training file and start a fine-tuning job using the OpenAI API.",
+    answer: `**Implementation:**
+
+\`\`\`javascript
+import OpenAI from 'openai';
+import fs from 'fs';
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async function startFineTuning(filePath) {
+  try {
+    console.log("Uploading training file...");
+    const file = await openai.files.create({
+      file: fs.createReadStream(filePath),
+      purpose: "fine-tune"
+    });
+    
+    console.log(\`File uploaded: \${file.id}\`);
+
+    // Wait for file processing (in production, you'd poll or wait longer)
+    // For this example, we assume it's ready quickly or the API handles the queue
+    
+    console.log("Starting fine-tuning job...");
+    const job = await openai.fineTuning.jobs.create({
+      training_file: file.id,
+      model: "gpt-3.5-turbo"
+    });
+
+    console.log(\`Job started: \${job.id}\`);
+    console.log(\`Status: \${job.status}\`);
+    return job;
+  } catch (error) {
+    console.error("Error starting fine-tuning:", error);
+  }
+}
+
+// Usage
+// startFineTuning("training_data.jsonl");
+\`\`\`
+`
+  },
+  {
+    id: slugify("Implement audio transcription with Whisper"),
+    type: "coding",
+    question: "Implement audio transcription using the Whisper API.",
+    answer: `**Implementation:**
+
+\`\`\`javascript
+import OpenAI from 'openai';
+import fs from 'fs';
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async function transcribeAudio(audioFilePath) {
+  try {
+    const transcription = await openai.audio.transcriptions.create({
+      file: fs.createReadStream(audioFilePath),
+      model: "whisper-1",
+      language: "en", // Optional: specify language
+      response_format: "text" // or 'json', 'verbose_json', 'srt', 'vtt'
+    });
+
+    return transcription;
+  } catch (error) {
+    console.error("Transcription failed:", error);
+  }
+}
+
+// Usage
+// const text = await transcribeAudio("meeting_recording.mp3");
+// console.log(text);
+\`\`\`
+`
+  },
+  {
+    id: slugify("Build a moderation filter"),
+    type: "coding",
+    question: "Build a moderation filter that checks user input against OpenAI's Moderation API before processing.",
+    answer: `**Implementation:**
+
+\`\`\`javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async function isSafeContent(input, threshold = 0.5) {
+  const response = await openai.moderations.create({
+    input: input,
+  });
+
+  const result = response.results[0];
+  
+  if (result.flagged) {
+    // Log usage of flagged categories
+    const flaggedCategories = Object.keys(result.categories)
+      .filter(cat => result.categories[cat]);
+      
+    console.warn(\`Content flagged as: \${flaggedCategories.join(', ')}\`);
+    return false;
+  }
+  
+  return true;
+}
+
+async function safeChat(userMessage) {
+  const safe = await isSafeContent(userMessage);
+  
+  if (!safe) {
+    return "I cannot process this request as it violates our safety guidelines.";
+  }
+  
+  // Proceed with chat completion
+  // ...
+  return "Processed safely.";
+}
+\`\`\`
+`
+  },
+  {
+    id: slugify("Visualize embeddings with PCA/t-SNE (concept)"),
+    type: "coding",
+    question: "Write a function that prepares embeddings for visualization by reducing dimensions (conceptual implementation).",
+    answer: `**Implementation:**
+
+\`\`\`javascript
+// Requires a library like 'ml-pca' or similar for dimensionality reduction
+// npm install ml-pca
+
+import { PCA } from 'ml-pca';
+import OpenAI from 'openai';
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async function getEmbeddingsBatch(texts) {
+  const response = await openai.embeddings.create({
+    model: "text-embedding-3-small",
+    input: texts,
+  });
+  return response.data.map(item => item.embedding);
+}
+
+function reduceDimensions(embeddings, nComponents = 2) {
+  const pca = new PCA(embeddings);
+  return pca.predict(embeddings, { nComponents }).to2DArray();
+}
+
+async function prepareVisualizationData(texts) {
+  const embeddings = await getEmbeddingsBatch(texts);
+  const points = reduceDimensions(embeddings);
+  
+  return texts.map((text, i) => ({
+    text,
+    x: points[i][0],
+    y: points[i][1]
+  }));
+}
+
+// Usage
+// const data = await prepareVisualizationData(["apple", "banana", "dog", "cat", "car", "truck"]);
+// console.log(data); // Ready for plotting in a chart
+\`\`\`
+`
+  },
+  {
+    id: slugify("Force structured JSON output"),
+    type: "coding",
+    question: "Implement a function that guarantees structured JSON output from the LLM using the 'json_object' response format.",
+    answer: `**Implementation:**
+
+\`\`\`javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async function extractUserData(text) {
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4-turbo", // Or gpt-3.5-turbo-1106+
+    messages: [
+      {
+        role: "system", 
+        content: "Extract user details into JSON. Always return JSON."
+      },
+      { 
+        role: "user", 
+        content: \`extract info for John Doe, 30 years old, developer from NY: \${text}\` 
+      }
+    ],
+    response_format: { type: "json_object" }
+  });
+
+  return JSON.parse(completion.choices[0].message.content);
+}
+
+// Usage
+// const data = await extractUserData("My name is Sarah, I'm a designer living in London.");
+// console.log(data); // { name: "Sarah", role: "designer", location: "London" }
+\`\`\`
+`
+  },
+  {
+    id: slugify("Analyze image with GPT-4 Vision"),
+    type: "coding",
+    question: "Write code to send an image (url or base64) to GPT-4 Vision for analysis.",
+    answer: `**Implementation:**
+
+\`\`\`javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async function describeImage(imageUrl) {
+  const response = await openai.chat.completions.create({
+    model: "gpt-4-turbo",
+    messages: [
+      {
+        role: "user",
+        content: [
+          { type: "text", text: "What is happening in this image?" },
+          {
+            type: "image_url",
+            image_url: {
+              "url": imageUrl,
+            },
+          },
+        ],
+      },
+    ],
+    max_tokens: 300,
+  });
+
+  return response.choices[0].message.content;
+}
+
+// Usage
+// describeImage("https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg");
+\`\`\`
+`
+  },
+  {
+    id: slugify("Implement exponential backoff retry for API calls"),
+    type: "coding",
+    question: "Create a wrapper function that retries OpenAI API calls with exponential backoff on failure.",
+    answer: `**Implementation:**
+
+\`\`\`javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function retryWithBackoff(fn, maxRetries = 3, initialDelay = 1000) {
+  let retries = 0;
+  
+  while (true) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (retries >= maxRetries) throw error;
+      
+      // Check if error is retryable (rate limit or server error)
+      if (error.status !== 429 && error.status < 500) {
+        throw error;
+      }
+      
+      const delay = initialDelay * Math.pow(2, retries);
+      console.log(\`Retry \${retries + 1}/\${maxRetries} after \${delay}ms...\`);
+      
+      await wait(delay);
+      retries++;
+    }
+  }
+}
+
+// Usage
+async function safeCompletion() {
+  return await retryWithBackoff(() => 
+    openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: "Hello" }]
+    })
+  );
+}
+\`\`\`
+`
+  },
+  {
+    id: slugify("Optimize system prompt dynamically"),
+    type: "coding",
+    question: "Write a function that adjusts the system prompt based on user's skill level or preference.",
+    answer: `**Implementation:**
+
+\`\`\`javascript
+function createSystemPrompt(userProfile) {
+  const basePrompt = "You are a helpful AI assistant.";
+  
+  let dynamicInstruction = "";
+  
+  if (userProfile.expertise === "expert") {
+    dynamicInstruction = "Provide concise, technical answers. Assume deep knowledge.";
+  } else if (userProfile.expertise === "beginner") {
+    dynamicInstruction = "Explain concepts simply with analogies. Avoid jargon.";
+  }
+  
+  if (userProfile.tone === "formal") {
+    dynamicInstruction += " Maintain a professional tone.";
+  } else {
+    dynamicInstruction += " Be conversational and friendly.";
+  }
+  
+  return \`\${basePrompt} \${dynamicInstruction}\`;
+}
+
+// Usage
+// const prompt = createSystemPrompt({ expertise: 'expert', tone: 'formal' });
+// openai.chat.completions.create({
+//   messages: [{ role: "system", content: prompt }, ...] 
+// });
+\`\`\`
+`
+  },
+  {
+    id: slugify("Simple in-memory embedding cache"),
+    type: "coding",
+    question: "Implement a simple in-memory cache for embeddings to reduce API costs.",
+    answer: `**Implementation:**
+
+\`\`\`javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+const embeddingCache = new Map();
+
+async function getCachedEmbedding(text) {
+  if (embeddingCache.has(text)) {
+    console.log("Cache hit");
+    return embeddingCache.get(text);
+  }
+  
+  console.log("Cache miss - fetching from API");
+  const response = await openai.embeddings.create({
+    model: "text-embedding-3-small",
+    input: text
+  });
+  
+  const embedding = response.data[0].embedding;
+  embeddingCache.set(text, embedding);
+  
+  return embedding;
+}
+
+// Usage
+// await getCachedEmbedding("Hello world");
+// await getCachedEmbedding("Hello world"); // Hits cache
+\`\`\`
+`
+  },
+  {
+    id: slugify("Generate speech from text (TTS)"),
+    type: "coding",
+    question: "Write code to generate spoken audio from text using OpenAI's TTS API.",
+    answer: `**Implementation:**
+
+\`\`\`javascript
+import OpenAI from 'openai';
+import fs from 'fs';
+import path from 'path';
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async function generateSpeech(text, outputFile) {
+  const mp3 = await openai.audio.speech.create({
+    model: "tts-1",
+    voice: "alloy", // alloy, echo, fable, onyx, nova, and shimmer
+    input: text,
+  });
+  
+  const buffer = Buffer.from(await mp3.arrayBuffer());
+  await fs.promises.writeFile(outputFile, buffer);
+  return outputFile;
+}
+
+// Usage
+// await generateSpeech("Hello, welcome to our application!", "welcome.mp3");
 \`\`\`
 `
   }
