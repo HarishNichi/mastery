@@ -133,6 +133,7 @@ export default function PathDetailPage() {
                 isCompleted={completedQuestions.has(q.id)}
                 onToggle={handleToggleQuestion}
                 isCoding={true}
+                isReact={pathId === 'react' || pathId === 'nextjs'}
               />
             ))}
           </div>

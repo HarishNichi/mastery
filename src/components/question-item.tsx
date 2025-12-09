@@ -78,7 +78,8 @@ export function QuestionItem({
   isCompleted,
   onToggle,
   isCoding = false,
-}: QuestionItemProps & { isCoding?: boolean }) {
+  isReact = false,
+}: QuestionItemProps & { isCoding?: boolean; isReact?: boolean }) {
   const handleCheckboxClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onToggle(question.id, !isCompleted);
@@ -115,6 +116,7 @@ export function QuestionItem({
                 <p className="mb-2 text-sm text-muted-foreground font-semibold uppercase tracking-wider">Playground</p>
                 <CodePlayground 
                   initialCode="// Write your solution here\n// console.log('Hello World!');\n" 
+                  isReact={isReact}
                 />
               </div>
             )}
