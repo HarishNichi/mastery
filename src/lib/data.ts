@@ -1,6 +1,7 @@
 import { Code, Bot, Milestone, PenTool } from "lucide-react";
 import type { LearningPath, Topic, Question } from "@/lib/types";
 import { slugify } from "@/lib/utils";
+import { aiTheoretical, aiCoding } from "@/lib/ai-data";
 
 const jsTheoretical: Question[] = [
   {
@@ -3366,6 +3367,11 @@ const systemDesignPath: Topic[] = [
   { id: "system-design-theoretical", title: "Theoretical Questions", questions: systemDesignTheoretical }
 ];
 
+const aiPath: Topic[] = [
+  { id: "ai-theoretical", title: "AI & LLM Fundamentals", questions: aiTheoretical },
+  { id: "ai-coding", title: "Practical AI Development", questions: aiCoding },
+];
+
 export const learningPaths: LearningPath[] = [
   {
     id: "javascript",
@@ -3387,6 +3393,13 @@ export const learningPaths: LearningPath[] = [
     description: "Explore the progressive JavaScript framework, covering the Options and Composition APIs, reactivity, and ecosystem.",
     icon: PenTool,
     topics: vuePath,
+  },
+  {
+    id: "generative-ai",
+    title: "Generative AI & LLMs",
+    description: "Master AI fundamentals, large language models, prompt engineering, and build intelligent applications with modern AI APIs.",
+    icon: Bot,
+    topics: aiPath,
   },
   {
     id: "system-design",

@@ -1,3 +1,4 @@
+import React from 'react';
 import Link from 'next/link';
 import type { LearningPath } from '@/lib/types';
 import { ArrowRight } from 'lucide-react';
