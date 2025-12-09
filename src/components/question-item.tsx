@@ -53,6 +53,11 @@ function renderAnswer(answer: string) {
 }
 
 
+import { VISUALIZER_MAP } from "@/components/dsa/visualizer-map";
+
+// ... (keep previous renderAnswer function if possible, but replace_file_content requires context)
+// Re-implementing QuestionItem to include visualizer logic
+
 export function QuestionItem({
   question,
   isCompleted,
@@ -63,6 +68,8 @@ export function QuestionItem({
     onToggle(question.id, !isCompleted);
   };
 
+  const VisualizerComponent = VISUALIZER_MAP[question.id];
+
   return (
     <Accordion type="single" collapsible>
       <AccordionItem
@@ -70,14 +77,19 @@ export function QuestionItem({
         className="border rounded-lg bg-card"
       >
         <div className="flex items-center p-4">
-            <span onClick={handleCheckboxClick} className="flex h-6 items-center pr-4">
-              <Checkbox id={`check-${question.id}`} checked={isCompleted} />
-            </span>
-            <AccordionTrigger className="p-0 text-left hover:no-underline flex-1">
-                <span className="flex-1">{question.question}</span>
-            </AccordionTrigger>
+          <span onClick={handleCheckboxClick} className="flex h-6 items-center pr-4 cursor-pointer">
+            <Checkbox id={`check-${question.id}`} checked={isCompleted} />
+          </span>
+          <AccordionTrigger className="p-0 text-left hover:no-underline flex-1">
+            <span className="flex-1 font-medium">{question.question}</span>
+          </AccordionTrigger>
         </div>
         <AccordionContent className="p-4 pt-0 pl-14">
+          {VisualizerComponent && (
+            <div className="mb-6">
+              <VisualizerComponent />
+            </div>
+          )}
           <div className="prose prose-sm max-w-none dark:prose-invert">
             {renderAnswer(question.answer)}
           </div>
