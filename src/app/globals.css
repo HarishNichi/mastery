@@ -4,53 +4,63 @@
 
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 263 70% 50%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 240 5% 15%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 5% 18%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 263 70% 50%;
-    --accent-foreground: 210 20% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5% 20%;
-    --input: 240 5% 20%;
-    --ring: 263 70% 50%;
-    --radius: 0.75rem;
+    /* Colorful Light Theme */
+    --background: 210 40% 98%; /* Soft cool white/blue tint */
+    --foreground: 222 47% 11%; /* Deep navy for text */
     
-    /* Custom Gradients */
-    --gradient-hero: linear-gradient(to right bottom, hsl(263 70% 50%), hsl(290 80% 60%));
-    --gradient-card: linear-gradient(145deg, hsl(240 10% 12%), hsl(240 10% 8%));
-    --gradient-border: linear-gradient(to right, hsl(263 70% 50% / 0.5), transparent);
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    
+    --primary: 262 83% 58%; /* Vibrant Purple */
+    --primary-foreground: 210 40% 98%;
+    
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    
+    --accent: 316 70% 50%; /* Pink/Magenta accent */
+    --accent-foreground: 222 47% 11%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 262 83% 58%;
+    
+    --radius: 0.75rem;
+
+    /* Custom Gradients - Vibrant & Light */
+    --gradient-hero: linear-gradient(135deg, hsl(262 83% 58%), hsl(316 70% 50%)); /* Purple to Pink */
+    --gradient-card: linear-gradient(145deg, #ffffff, #f3f4f6);
+    --gradient-border: linear-gradient(to right, hsl(262 83% 58%), hsl(316 70% 50%));
   }
 
-  /* Force Dark Mode Default mostly, or just vibrant colors */
-  .light {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+  /* Dark mode override (optional, if user toggles back) */
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
     --primary: 263 70% 50%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
     --accent: 263 70% 50%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
     --ring: 263 70% 50%;
   }
 }
@@ -65,32 +75,25 @@
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-headline tracking-tight;
+    @apply font-headline tracking-tight text-foreground;
   }
   
-  /* Glassmorphism Utilities */
+  /* Glassmorphism Utilities - Adjusted for Light Mode */
   .glass {
-    @apply bg-background/60 backdrop-blur-xl border border-white/10 shadow-xl;
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-xl;
   }
   
   .glass-card {
     background: var(--gradient-card);
-    @apply border border-white/5 backdrop-blur-sm relative overflow-hidden;
+    @apply border border-border/50 backdrop-blur-sm relative overflow-hidden shadow-sm hover:shadow-md transition-shadow;
   }
   
-  .glass-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom right, rgba(255,255,255,0.05), transparent);
-    pointer-events: none;
-  }
-
+  /* Code blocks - Distinct look */
   code:not([class*="language-"]) {
-    @apply bg-muted text-primary rounded-md px-1.5 py-0.5 font-code text-[0.9em] border border-white/5;
+    @apply bg-primary/10 text-primary rounded-md px-1.5 py-0.5 font-code text-[0.9em] border border-primary/20;
   }
 
   pre {
-    @apply bg-[#0d1117] border border-[#30363d] rounded-lg p-4 overflow-x-auto text-sm my-4 shadow-inner;
+    @apply bg-slate-900 border border-slate-700 rounded-lg p-4 overflow-x-auto text-sm my-4 shadow-lg text-slate-50;
   }
 }

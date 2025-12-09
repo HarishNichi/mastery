@@ -15,7 +15,7 @@ export function PathCard({ path }: { path: LearningPath }) {
   const Icon = path.icon;
 
   return (
-    <Card className="glass-card group h-full flex flex-col transition-all hover:bg-white/5">
+    <Card className="glass-card group h-full flex flex-col transition-all hover:bg-primary/5 hover:shadow-xl hover:-translate-y-1">
       <CardHeader className="flex-grow space-y-4">
         <div className="flex items-start justify-between">
           <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center group-hover:from-primary/30 group-hover:to-accent/30 transition-colors">

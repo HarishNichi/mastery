@@ -33,7 +33,7 @@ export default function Home() {
         className="container mx-auto px-4 py-8 relative z-10"
       >
         <motion.div variants={item} className="mb-16 text-center space-y-6 max-w-4xl mx-auto pt-10">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tighter bg-gradient-to-r from-white via-primary/80 to-accent bg-clip-text text-transparent pb-2">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tighter bg-gradient-to-r from-primary via-purple-600 to-accent bg-clip-text text-transparent pb-2">
             Master the Craft.
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mx-auto">
